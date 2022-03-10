@@ -4,9 +4,16 @@ var getUserRepos = function(user){
 
     //make a request to the url
     fetch(apiUrl).then(function(response){
-        response.json().then(function(data){
-            displayRepos(data, user);
+      if (response.ok) {
+        response.json().then(function(data) {
+          displayRepos(data, user);
         });
+      } else {
+        alert("Error: Github user not found.");
+      }
+    })
+    .catch(function(error) {
+      alert("unable to connect to github")
     });
 };
 var repoContainerEl = document.querySelector("#repos-container");
@@ -31,6 +38,10 @@ if (username) {
 userFormEl.addEventListener("submit", formSubmitHandler);
 
 var displayRepos = function(repos, searchTerm) {
+  if (repos.length === 0) {
+    repoContainerEl.textContent = "No repositories found.";
+    return;
+  }
     console.log(repos);
     console.log(searchTerm);
 // clear old content
